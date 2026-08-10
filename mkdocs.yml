@@ -82,6 +82,8 @@ nav:
       - Users: services/users.md
       - Webhooks: services/webhooks.md
       - Workspaces: services/workspaces.md
+  - Releases:
+      - v0.1.0: releases/v0.1.0.md
 
 extra:
   social:
