@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Postman API Reference</title>
+  </head>
+  <body>
+    <!--
+      Renders openapi/openapi.yaml with Scalar (https://github.com/scalar/scalar).
+
+      `url` points at the raw GitHub content of the spec on `main` so this page
+      works no matter how it's opened: double-clicked locally, served via
+      GitHub Pages, or hosted on any static file server. To preview local edits
+      to openapi/openapi.yaml before they're pushed, run a local server from the
+      repo root (`python3 -m http.server`) and change `url` below to
+      "../openapi/openapi.yaml".
+    -->
+    <script src="https://cdn.jsdelivr.net/npm/@scalar/api-reference"></script>
+    <script>
+      Scalar.createApiReference(document.body, {
+        url: "https://raw.githubusercontent.com/grokify/postman-go/main/openapi/openapi.yaml",
+        theme: "purple",
+        layout: "modern",
+        showSidebar: true,
+        defaultOpenAllTags: false,
+      });
+    </script>
+  </body>
+</html>
