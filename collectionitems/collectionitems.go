@@ -727,27 +727,6 @@ type DeletedResponse struct {
 	Owner string
 }
 
-// responseFields holds the fields shared by CreateResponseInput and
-// UpdateResponseInput.
-type responseFields struct {
-	Name          string
-	Description   string
-	URL           string
-	Method        string
-	Headers       []Header
-	DataMode      string
-	RawModeData   string
-	ResponseCode  *ResponseCode
-	Status        string
-	Time          string
-	Cookies       string
-	Mime          string
-	Text          string
-	Language      string
-	RawDataType   string
-	RequestObject string
-}
-
 func responseHeadersFromInput(hs []Header) []api.ResponseHeader22 {
 	if len(hs) == 0 {
 		return nil
@@ -766,8 +745,24 @@ func responseHeadersFromInput(hs []Header) []api.ResponseHeader22 {
 // CreateResponseInput holds the fields for creating a response.
 type CreateResponseInput struct {
 	// RequestID is the ID of the parent request. Required.
-	RequestID string
-	responseFields
+	RequestID     string
+	Name          string
+	Description   string
+	URL           string
+	Method        string
+	Headers       []Header
+	DataMode      string
+	RawModeData   string
+	ResponseCode  *ResponseCode
+	Status        string
+	Time          string
+	Cookies       string
+	Mime          string
+	Text          string
+	Language      string
+	RawDataType   string
+	RequestObject string
+
 	AdditionalProperties map[string]json.RawMessage
 }
 
@@ -925,7 +920,23 @@ func (s *Service) GetResponse(ctx context.Context, collectionID, responseID stri
 
 // UpdateResponseInput holds the fields for updating a response.
 type UpdateResponseInput struct {
-	responseFields
+	Name          string
+	Description   string
+	URL           string
+	Method        string
+	Headers       []Header
+	DataMode      string
+	RawModeData   string
+	ResponseCode  *ResponseCode
+	Status        string
+	Time          string
+	Cookies       string
+	Mime          string
+	Text          string
+	Language      string
+	RawDataType   string
+	RequestObject string
+
 	AdditionalProperties map[string]json.RawMessage
 }
 
