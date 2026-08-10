@@ -77,6 +77,23 @@ package with plain Go types, typed errors, and unit tests.
 
 Each service is reachable from a single `*postman.Client` — see [Usage](#usage).
 
+## Documentation
+
+The full guide site — installation, authentication, error handling, rate
+limiting, and a usage page per service — is published at
+**[grokify.github.io/postman-go](https://grokify.github.io/postman-go)**,
+built with [MkDocs](https://www.mkdocs.org/) + [Material](https://squidfunk.github.io/mkdocs-material/)
+from [`docs/`](docs/) and [`mkdocs.yml`](mkdocs.yml). Preview it locally:
+
+```bash
+pip install mkdocs-material
+mkdocs serve   # http://127.0.0.1:8000
+```
+
+For the raw, endpoint-level API reference (not Go-specific usage), see
+[API Reference](#api-reference) below. For GoDoc, see the badge at the top of
+this file.
+
 ## API Reference
 
 [`docs/api-reference.html`](docs/api-reference.html) renders [`openapi/openapi.yaml`](openapi/openapi.yaml)
@@ -222,7 +239,11 @@ postman-go/
 ├── collections/
 ├── workspaces/
 ├── ...
-├── docs/api-reference.html # Scalar-rendered API reference (see openapi.yaml)
+├── mkdocs.yml             # guide site config (see Documentation above)
+├── docs/
+│   ├── index.md, getting-started/, guides/  # guide site source
+│   ├── services/*.md      # one usage page per service, mirrors nav below
+│   └── api-reference.html # Scalar-rendered API reference (see openapi.yaml)
 └── examples/              # runnable examples
 ```
 
