@@ -66,7 +66,7 @@ const (
 
 	// EnvAPIKey is the environment variable read for the API key when one is not
 	// supplied via WithAPIKey.
-	EnvAPIKey = "POSTMAN_API_KEY"
+	EnvAPIKey = "POSTMAN_API_KEY" //nolint:gosec // G101: This is an environment variable name, not a credential
 )
 
 // APIError is an error returned by the Postman API. It is an alias for

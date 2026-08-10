@@ -82,7 +82,7 @@ const (
 	MetricAgentModeSessions             Metric = "agent_mode_sessions"
 	MetricMessagesSent                  Metric = "messages_sent"
 	MetricCreditUsage                   Metric = "credit_usage"
-	MetricCreditUsageByModel            Metric = "credit_usage_by_model"
+	MetricCreditUsageByModel            Metric = "credit_usage_by_model" //nolint:gosec // G101: Enum/constant identifier matches the credential-name heuristic, but the value is a public tag, not a secret
 	MetricUsageLeaderboard              Metric = "usage_leaderboard"
 	MetricPeakActivity                  Metric = "peak_activity"
 	MetricActivityDistribution          Metric = "activity_distribution"

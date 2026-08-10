@@ -62,7 +62,7 @@ const (
 	// SecretTypeOriginDefault is a secret type supported by default in Postman.
 	SecretTypeOriginDefault SecretTypeOrigin = "DEFAULT"
 	// SecretTypeOriginTeamRegex is a custom regex added by a team Admin.
-	SecretTypeOriginTeamRegex SecretTypeOrigin = "TEAM_REGEX"
+	SecretTypeOriginTeamRegex SecretTypeOrigin = "TEAM_REGEX" //nolint:gosec // G101: Enum/constant identifier matches the credential-name heuristic, but the value is a public tag, not a secret
 )
 
 // Service is the high-level Secret Scanner client. Obtain one via
