@@ -361,6 +361,7 @@ func TestGenerateCollection(t *testing.T) {
 	}
 }
 
+//nolint:dupl // Standalone test for a distinct endpoint; consolidating would reduce per-test clarity for a negligible reduction in duplication
 func TestSyncWithCollection(t *testing.T) {
 	svc, srv := newService(t, func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPut || r.URL.Path != "/specs/s1/synchronizations" {
@@ -461,6 +462,7 @@ func TestGenerateFromCollection(t *testing.T) {
 	}
 }
 
+//nolint:dupl // Standalone test for a distinct endpoint; consolidating would reduce per-test clarity for a negligible reduction in duplication
 func TestSyncCollectionWithSpec(t *testing.T) {
 	svc, srv := newService(t, func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPut || r.URL.Path != "/collections/c1/synchronizations" {

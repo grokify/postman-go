@@ -79,6 +79,7 @@ func TestCreateFolderError(t *testing.T) {
 	}
 }
 
+//nolint:dupl // Standalone test for a distinct endpoint; consolidating would reduce per-test clarity for a negligible reduction in duplication
 func TestGetFolder(t *testing.T) {
 	svc, srv := newService(t, func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodGet || r.URL.Path != "/collections/c1/folders/f1" {
@@ -116,6 +117,7 @@ func TestGetFolderNotFound(t *testing.T) {
 	}
 }
 
+//nolint:dupl // Standalone test for a distinct endpoint; consolidating would reduce per-test clarity for a negligible reduction in duplication
 func TestUpdateFolder(t *testing.T) {
 	svc, srv := newService(t, func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPut || r.URL.Path != "/collections/c1/folders/f1" {
@@ -279,6 +281,7 @@ func TestGetRequestNotFound(t *testing.T) {
 	}
 }
 
+//nolint:dupl // Standalone test for a distinct endpoint; consolidating would reduce per-test clarity for a negligible reduction in duplication
 func TestUpdateRequest(t *testing.T) {
 	svc, srv := newService(t, func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPut || r.URL.Path != "/collections/c1/requests/r1" {
@@ -404,6 +407,7 @@ func TestCreateResponseError(t *testing.T) {
 	}
 }
 
+//nolint:dupl // Standalone test for a distinct endpoint; consolidating would reduce per-test clarity for a negligible reduction in duplication
 func TestGetResponse(t *testing.T) {
 	svc, srv := newService(t, func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodGet || r.URL.Path != "/collections/c1/responses/resp1" {
