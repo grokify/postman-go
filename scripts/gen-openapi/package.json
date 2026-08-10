@@ -1,0 +1,14 @@
+{
+  "name": "postman-gen-openapi",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Reconstructs an OpenAPI 3.0 spec for the Postman API from the official TypeScript SDK sources.",
+  "scripts": {
+    "gen": "node index.mjs"
+  },
+  "dependencies": {
+    "js-yaml": "^4.1.0",
+    "ts-morph": "^24.0.0"
+  }
+}
