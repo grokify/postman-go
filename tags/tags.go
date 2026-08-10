@@ -81,6 +81,8 @@ func (s *Service) Collection(ctx context.Context, collectionID string) ([]string
 
 // UpdateCollection replaces all of a collection's tags with the given slugs
 // (up to 5).
+//
+//nolint:dupl // Structurally parallel to sibling wrapper methods over distinct generated types; not meaningfully extractable without reflection or per-type adapters
 func (s *Service) UpdateCollection(ctx context.Context, collectionID string, slugs []string) ([]string, error) {
 	req := &api.UpdateTags{Tags: tagsToRaw(slugs)}
 	params := api.UpdateCollectionTagsParams{CollectionId: collectionID}
@@ -137,6 +139,8 @@ func (s *Service) Workspace(ctx context.Context, workspaceID string) ([]string, 
 
 // UpdateWorkspace replaces all of a workspace's tags with the given slugs (up
 // to 5).
+//
+//nolint:dupl // Structurally parallel to sibling wrapper methods over distinct generated types; not meaningfully extractable without reflection or per-type adapters
 func (s *Service) UpdateWorkspace(ctx context.Context, workspaceID string, slugs []string) ([]string, error) {
 	req := &api.UpdateTags{Tags: tagsToRaw(slugs)}
 	params := api.UpdateWorkspaceTagsParams{WorkspaceId: workspaceID}

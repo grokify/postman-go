@@ -263,6 +263,8 @@ type CreateResult struct {
 // Create creates an API specification in Postman's Spec Hub. Specifications
 // can be single or multi-file; Postman supports OpenAPI, AsyncAPI, protobuf,
 // GraphQL, and Smithy specifications.
+//
+//nolint:dupl // Structurally parallel to sibling wrapper methods over distinct generated types; not meaningfully extractable without reflection or per-type adapters
 func (s *Service) Create(ctx context.Context, in *CreateInput) (*CreateResult, error) {
 	if in == nil {
 		in = &CreateInput{}
@@ -402,6 +404,8 @@ type UpdatePropertiesResult struct {
 
 // UpdateProperties updates an API specification's properties, such as its
 // name.
+//
+//nolint:dupl // Structurally parallel to sibling wrapper methods over distinct generated types; not meaningfully extractable without reflection or per-type adapters
 func (s *Service) UpdateProperties(ctx context.Context, specID string, in *UpdatePropertiesInput) (*UpdatePropertiesResult, error) {
 	if in == nil {
 		in = &UpdatePropertiesInput{}

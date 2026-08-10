@@ -198,6 +198,8 @@ func folderFromInfoData(d api.CollectionFolderInfoData) Folder {
 }
 
 // GetFolder returns information about a folder in a collection.
+//
+//nolint:dupl // Structurally parallel to sibling wrapper methods over distinct generated types; not meaningfully extractable without reflection or per-type adapters
 func (s *Service) GetFolder(ctx context.Context, collectionID, folderID string, opts *GetOptions) (*FolderResult, error) {
 	params := api.GetCollectionFolderParams{CollectionId: collectionID, FolderId: folderID}
 	if opts != nil {
@@ -303,6 +305,8 @@ func (s *Service) UpdateFolder(ctx context.Context, collectionID, folderID strin
 }
 
 // DeleteFolder deletes a folder in a collection.
+//
+//nolint:dupl // Structurally parallel to sibling wrapper methods over distinct generated types; not meaningfully extractable without reflection or per-type adapters
 func (s *Service) DeleteFolder(ctx context.Context, collectionID, folderID string) (*DeletedFolder, error) {
 	res, err := s.api.DeleteCollectionFolder(ctx, api.DeleteCollectionFolderParams{CollectionId: collectionID, FolderId: folderID})
 	if err != nil {
@@ -531,6 +535,8 @@ func requestFromInfoData(d api.CollectionRequestInfoData) Request {
 }
 
 // GetRequest returns information about a request in a collection.
+//
+//nolint:dupl // Structurally parallel to sibling wrapper methods over distinct generated types; not meaningfully extractable without reflection or per-type adapters
 func (s *Service) GetRequest(ctx context.Context, collectionID, requestID string, opts *GetOptions) (*RequestResult, error) {
 	params := api.GetCollectionRequestParams{CollectionId: collectionID, RequestId: requestID}
 	if opts != nil {
@@ -654,6 +660,8 @@ func (s *Service) UpdateRequest(ctx context.Context, collectionID, requestID str
 }
 
 // DeleteRequest deletes a request in a collection.
+//
+//nolint:dupl // Structurally parallel to sibling wrapper methods over distinct generated types; not meaningfully extractable without reflection or per-type adapters
 func (s *Service) DeleteRequest(ctx context.Context, collectionID, requestID string) (*DeletedRequest, error) {
 	res, err := s.api.DeleteCollectionRequest(ctx, api.DeleteCollectionRequestParams{CollectionId: collectionID, RequestId: requestID})
 	if err != nil {
@@ -876,6 +884,8 @@ func responseFromInfoData(d api.CollectionResponseInfoData) Response {
 }
 
 // GetResponse returns information about a response in a collection.
+//
+//nolint:dupl // Structurally parallel to sibling wrapper methods over distinct generated types; not meaningfully extractable without reflection or per-type adapters
 func (s *Service) GetResponse(ctx context.Context, collectionID, responseID string, opts *GetOptions) (*ResponseResult, error) {
 	params := api.GetCollectionResponseParams{CollectionId: collectionID, ResponseId: responseID}
 	if opts != nil {
@@ -1017,6 +1027,8 @@ func (s *Service) UpdateResponse(ctx context.Context, collectionID, responseID s
 }
 
 // DeleteResponse deletes a response in a collection.
+//
+//nolint:dupl // Structurally parallel to sibling wrapper methods over distinct generated types; not meaningfully extractable without reflection or per-type adapters
 func (s *Service) DeleteResponse(ctx context.Context, collectionID, responseID string) (*DeletedResponse, error) {
 	res, err := s.api.DeleteCollectionResponse(ctx, api.DeleteCollectionResponseParams{CollectionId: collectionID, ResponseId: responseID})
 	if err != nil {

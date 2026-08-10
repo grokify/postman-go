@@ -465,6 +465,8 @@ func retryOptionsToAPI(r *RetryOptions) api.SdkRetryOptions {
 
 // Status returns information about the SDK, including its current build job
 // status.
+//
+//nolint:dupl // Structurally parallel to sibling wrapper methods over distinct generated types; not meaningfully extractable without reflection or per-type adapters
 func (s *Service) Status(ctx context.Context, sdkID string) (*SDK, error) {
 	res, err := s.api.GetSdk(ctx, api.GetSdkParams{SdkId: sdkID})
 	if err != nil {
@@ -747,6 +749,8 @@ func (s *Service) ConnectGit(ctx context.Context, in *ConnectGitInput) (*GitConn
 // GitConnection gets information about an SDK's Git connection, including
 // the SDK currently sent to the target branch and the most recent
 // SDK-update pull request.
+//
+//nolint:dupl // Structurally parallel to sibling wrapper methods over distinct generated types; not meaningfully extractable without reflection or per-type adapters
 func (s *Service) GitConnection(ctx context.Context, connectionID string) (*GitConnection, error) {
 	res, err := s.api.GetSdkGitConnection(ctx, api.GetSdkGitConnectionParams{SdkGitConnectionId: connectionID})
 	if err != nil {
