@@ -52,6 +52,22 @@ package with plain Go types, typed errors, and unit tests.
 
 Each service is reachable from a single `*postman.Client` — see [Usage](#usage).
 
+## API Reference
+
+[`docs/api-reference.html`](docs/api-reference.html) renders [`openapi/openapi.yaml`](openapi/openapi.yaml)
+as a browsable API reference with [Scalar](https://github.com/scalar/scalar).
+It's a static page with no build step — open it directly:
+
+```bash
+open docs/api-reference.html   # macOS; xdg-open on Linux
+```
+
+The page fetches the spec from `main` on GitHub, so it works whether you open
+it locally, host it via GitHub Pages, or serve it from any static file server.
+To preview local edits to `openapi/openapi.yaml` before pushing, run a local
+server from the repo root (`python3 -m http.server`) and point the page's
+`url` config at `../openapi/openapi.yaml` instead.
+
 ## Installation
 
 ```bash
@@ -181,6 +197,7 @@ postman-go/
 ├── collections/
 ├── workspaces/
 ├── ...
+├── docs/api-reference.html # Scalar-rendered API reference (see openapi.yaml)
 └── examples/              # runnable examples
 ```
 
