@@ -48,12 +48,14 @@ type AuthenticatedUser struct {
 }
 
 // Operation describes usage of a metered Postman operation (e.g. API calls,
-// mock usage) for the authenticated user's plan.
+// mock usage) for the authenticated user's plan. Usage, Limit, and Overage
+// are float64 because some metered operations (e.g. test_data_storage) report
+// fractional values.
 type Operation struct {
 	Name    string
-	Usage   int
-	Limit   int
-	Overage int
+	Usage   float64
+	Limit   float64
+	Overage float64
 }
 
 // MeResult is the response from Me.

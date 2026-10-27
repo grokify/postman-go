@@ -17020,13 +17020,16 @@ components:
       type: object
       properties:
         limit:
-          type: integer
+          type: number
+          format: double
         name:
           type: string
         overage:
-          type: integer
+          type: number
+          format: double
         usage:
-          type: integer
+          type: number
+          format: double
     SuccessfulResponseRequests:
       type: object
       properties:

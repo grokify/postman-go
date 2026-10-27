@@ -57,6 +57,21 @@ log(`loaded ${sourceFiles.length} TS source files`);
 const components = {}; // finalName -> schema object
 const usedNames = new Set();
 
+// The TS SDK models every numeric field as a bare Zod `z.number()` (never
+// `.int()` - a corpus-wide check across postman-api-sdk-ts found zero uses),
+// so there's no source signal to distinguish integers from floats. We assume
+// `integer` by default since that's right for the common case (IDs, counts),
+// but the Postman API is known to return fractional values for some metered
+// fields (e.g. `/me`'s operations[].limit returned 8.88 for
+// test_data_storage), so those confirmed cases are force-typed to `number`
+// here. Add an entry (`${OpenAPI component name}.${property}`) when a future
+// regen turns up another field the live API returns as a float.
+const FLOAT_FIELDS = new Set([
+  'SuccessfulResponseOperations.limit',
+  'SuccessfulResponseOperations.usage',
+  'SuccessfulResponseOperations.overage',
+]);
+
 // The TS SDK marks some pagination/meta string fields non-nullable, but the
 // live Postman API returns `null` for them (e.g. a locations response's
 // meta.cursor when there is no cursor), which the strict decoder rejects. Force
@@ -361,6 +376,13 @@ function parseZodObject(sf, callExpr, depth, schemaName = undefined) {
       if (!valExpr) continue;
       const res = parseZod(sf, valExpr, depth + 1, schemaName);
       let fieldSchema = res.schema || {};
+      if (fieldSchema.type === 'integer' && schemaName && FLOAT_FIELDS.has(`${schemaName}.${key}`)) {
+        // format: double (not bare `number`) so the precision choice is
+        // explicit in the spec; ogen maps bare `number` to float64 anyway,
+        // but an unset format reads as ambiguous, and `float` would silently
+        // downgrade generated code to float32.
+        fieldSchema = { ...fieldSchema, type: 'number', format: 'double' };
+      }
       const forceNullable = schemaName && NULLABLE_FIELDS.has(`${schemaName}.${key}`);
       if (res.nullable || forceNullable) {
         if (fieldSchema.$ref) {

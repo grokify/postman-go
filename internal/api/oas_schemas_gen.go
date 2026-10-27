@@ -24576,6 +24576,52 @@ func (o OptFilters) Or(d Filters) Filters {
 	return d
 }
 
+// NewOptFloat64 returns new OptFloat64 with value set to v.
+func NewOptFloat64(v float64) OptFloat64 {
+	return OptFloat64{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptFloat64 is optional float64.
+type OptFloat64 struct {
+	Value float64
+	Set   bool
+}
+
+// IsSet returns true if OptFloat64 was set.
+func (o OptFloat64) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptFloat64) Reset() {
+	var v float64
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptFloat64) SetTo(v float64) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptFloat64) Get() (v float64, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptFloat64) Or(d float64) float64 {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // NewOptFolderStrategy returns new OptFolderStrategy with value set to v.
 func NewOptFolderStrategy(v FolderStrategy) OptFolderStrategy {
 	return OptFolderStrategy{
@@ -42864,14 +42910,14 @@ func (s *SuccessfulResponseMonitors) SetEnvironmentUid(val OptString) {
 
 // Ref: #/components/schemas/SuccessfulResponseOperations
 type SuccessfulResponseOperations struct {
-	Limit   OptInt    `json:"limit"`
-	Name    OptString `json:"name"`
-	Overage OptInt    `json:"overage"`
-	Usage   OptInt    `json:"usage"`
+	Limit   OptFloat64 `json:"limit"`
+	Name    OptString  `json:"name"`
+	Overage OptFloat64 `json:"overage"`
+	Usage   OptFloat64 `json:"usage"`
 }
 
 // GetLimit returns the value of Limit.
-func (s *SuccessfulResponseOperations) GetLimit() OptInt {
+func (s *SuccessfulResponseOperations) GetLimit() OptFloat64 {
 	return s.Limit
 }
 
@@ -42881,17 +42927,17 @@ func (s *SuccessfulResponseOperations) GetName() OptString {
 }
 
 // GetOverage returns the value of Overage.
-func (s *SuccessfulResponseOperations) GetOverage() OptInt {
+func (s *SuccessfulResponseOperations) GetOverage() OptFloat64 {
 	return s.Overage
 }
 
 // GetUsage returns the value of Usage.
-func (s *SuccessfulResponseOperations) GetUsage() OptInt {
+func (s *SuccessfulResponseOperations) GetUsage() OptFloat64 {
 	return s.Usage
 }
 
 // SetLimit sets the value of Limit.
-func (s *SuccessfulResponseOperations) SetLimit(val OptInt) {
+func (s *SuccessfulResponseOperations) SetLimit(val OptFloat64) {
 	s.Limit = val
 }
 
@@ -42901,12 +42947,12 @@ func (s *SuccessfulResponseOperations) SetName(val OptString) {
 }
 
 // SetOverage sets the value of Overage.
-func (s *SuccessfulResponseOperations) SetOverage(val OptInt) {
+func (s *SuccessfulResponseOperations) SetOverage(val OptFloat64) {
 	s.Overage = val
 }
 
 // SetUsage sets the value of Usage.
-func (s *SuccessfulResponseOperations) SetUsage(val OptInt) {
+func (s *SuccessfulResponseOperations) SetUsage(val OptFloat64) {
 	s.Usage = val
 }
 
