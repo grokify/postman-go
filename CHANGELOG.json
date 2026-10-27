@@ -7,6 +7,53 @@
   "maintainers": ["grokify", "johncwang@gmail.com"],
   "releases": [
     {
+      "version": "v0.2.0",
+      "date": "2026-10-27",
+      "commit": "20f95eb",
+      "highlights": [
+        { "description": "New `ocsf` package maps Secret Scanner findings to OCSF Detection Finding events (`class_uid` 2004) for SIEMs and data lakes, with optional enrichment for resource names, owners, and remediation guidance", "commit": "d055c9f" },
+        { "description": "Fixes for live API responses the TypeScript-derived spec got wrong: fractional metered operation values, `null` Secret Scanner cursor and resolution fields, and the Secret Scanner's string-typed default `limit` echo", "commit": "10c62ec" },
+        { "description": "New guides for OCSF export and testing, plus opt-in integration tests against the live API", "commit": "8db879a" }
+      ],
+      "breaking": [
+        { "description": "`users.Operation` `Usage`, `Limit`, and `Overage` change from `int` to `float64`, because some metered operations (for example `test_data_storage`) report fractional values", "commit": "10c62ec" }
+      ],
+      "upgradeGuide": [
+        { "description": "Code that reads `users.Operation` `Usage`, `Limit`, or `Overage` as `int` must switch to `float64`, or convert explicitly with `int(op.Limit)`", "commit": "10c62ec" },
+        { "description": "The module now requires Go 1.26 or later (up from 1.25), following the OpenTelemetry v1.47.0 upgrade", "commit": "8c64226" }
+      ],
+      "added": [
+        { "description": "`ocsf` package: `FromQueryResult`, `FromDetectedSecret`, `FromDetectedSecretWithLocations`, `FromDetectedSecretEnriched`, `FromActivityFeed`, and `FromActivityFeedEntry` map Secret Scanner results to OCSF Detection Findings, with `Options` for product name and schema version and `Enrichment` for caller-resolved owners, resource names, and per-type remediation", "commit": "d055c9f" },
+        { "description": "Spec generator per-field overrides: `FLOAT_FIELDS` types listed fields as `number`/`double` and `NULLABLE_FIELDS` marks listed fields nullable, so live-API corrections survive regeneration", "commit": "65dd73d" }
+      ],
+      "changed": [
+        { "description": "Secret Scanner `Query` and `Locations` now send `limit=100` (the API's maximum page size) when the caller leaves `Limit` at `0`, instead of omitting the parameter", "commit": "883fb73" },
+        { "description": "Minimum Go version raised from 1.25 to 1.26", "commit": "8c64226" }
+      ],
+      "fixed": [
+        { "description": "Secret Scanner `Query` and `Locations` failed to decode when no limit was given, because Postman echoes its implicit default page size back as a string (`\"limit\":\"30\"`)", "commit": "883fb73" },
+        { "description": "Secret Scanner `Locations` failed to decode an unresolved secret's response, because the live API returns `null` for `meta.cursor` and for the activity-feed `resolvedAt` and `resolvedBy`", "commit": "65dd73d" },
+        { "description": "`Users().Me` failed to decode when a metered operation reported a fractional value (for example a `test_data_storage` limit of `8.88`)", "commit": "10c62ec" }
+      ],
+      "tests": [
+        { "description": "Decode regression tests replaying live API response shapes: the default page limit, `null` Secret Scanner cursor and resolution fields, and fractional operation values", "commit": "bc28e89" },
+        { "description": "`ocsf` mapping, enrichment, and OCSF schema validation tests", "commit": "aee3ff2" },
+        { "description": "Opt-in integration tests for `/me`, workspaces, collections, and teams against the live API, skipped unless `POSTMAN_API_KEY` is set", "commit": "dae1448" }
+      ],
+      "documentation": [
+        { "description": "Guides for exporting findings to OCSF and for running unit and integration tests; `ocsf` listed on the home page", "commit": "8db879a" },
+        { "description": "Service pages document the Secret Scanner default limit, pagination, and `null` activity-feed fields, and `float64` operation values; installation page lists Go 1.26; generator README documents the per-field overrides", "commit": "cd3062d" },
+        { "description": "README covers OCSF export, testing, the generator overrides, and the Go 1.26 requirement", "commit": "20f95eb" }
+      ],
+      "dependencies": [
+        { "description": "Added `github.com/grokify/ocsf-schema-go` v0.1.0", "commit": "d055c9f" },
+        { "description": "Bumped `go.opentelemetry.io/otel` from 1.45.0 to 1.47.0", "commit": "8c64226" },
+        { "description": "Bumped `go.opentelemetry.io/otel/trace` from 1.45.0 to 1.47.0", "commit": "7bad321" },
+        { "description": "Bumped `go.opentelemetry.io/otel/metric` from 1.45.0 to 1.47.0", "commit": "6ab8fa7" },
+        { "description": "Bumped indirect dependencies: `golang.org/x/{exp,net,sync,sys,text}`, `go-colorable`, and `shopspring/decimal`", "commit": "d2c08af" }
+      ]
+    },
+    {
       "version": "v0.1.0",
       "date": "2026-08-10",
       "commit": "0c37559",
