@@ -327,7 +327,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../releases/v0.1.0/" class="md-tabs__link">
+        <a href="../../releases/v0.2.0/" class="md-tabs__link">
           
   
   
@@ -653,6 +653,62 @@
     
   
     Rate Limiting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guides/ocsf/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Exporting to OCSF
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guides/testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing
   
 
     
@@ -1540,6 +1596,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#exporting-to-ocsf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exporting to OCSF
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#reference" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1823,6 +1890,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../releases/v0.2.0/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    v0.2.0
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../releases/v0.1.0/" class="md-nav__link">
         
   
@@ -1950,6 +2045,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#exporting-to-ocsf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exporting to OCSF
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#reference" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2051,28 +2157,58 @@ Advanced Security Administration add-on enabled — see
 </code></pre></div>
 <p>A <code>nil</code> input returns all results. <code>Resources</code> and <code>WorkspaceIDs</code> are
 mutually exclusive filters.</p>
+<p>When <code>Limit</code> is <code>0</code>, the SDK sends <code>limit=100</code>, the API's maximum page size.
+It always sends a limit because, without one, Postman echoes its default page
+size back as a string, which the response decoder rejects.</p>
+<p>To fetch every page, pass <code>NextCursor</code> back as <code>Cursor</code> until it's empty:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nx">in</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="o">&amp;</span><span class="nx">secretscanner</span><span class="p">.</span><span class="nx">QueryInput</span><span class="p">{}</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="k">for</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="nx">page</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">client</span><span class="p">.</span><span class="nx">SecretScanner</span><span class="p">().</span><span class="nx">Query</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span><span class="w"> </span><span class="nx">in</span><span class="p">)</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">nil</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">err</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">s</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">page</span><span class="p">.</span><span class="nx">Secrets</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">        </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">s</span><span class="p">.</span><span class="nx">SecretID</span><span class="p">,</span><span class="w"> </span><span class="nx">s</span><span class="p">.</span><span class="nx">SecretType</span><span class="p">)</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="nx">page</span><span class="p">.</span><span class="nx">NextCursor</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="w">        </span><span class="k">break</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="w">    </span><span class="nx">in</span><span class="p">.</span><span class="nx">Cursor</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="nx">page</span><span class="p">.</span><span class="nx">NextCursor</span>
+<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="p">}</span>
+</code></pre></div>
 <h3 id="updateresolution">UpdateResolution<a class="headerlink" href="#updateresolution" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">client</span><span class="p">.</span><span class="nx">SecretScanner</span><span class="p">().</span><span class="nx">UpdateResolution</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;SECRET_ID&quot;</span><span class="p">,</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span><span class="o">&amp;</span><span class="nx">secretscanner</span><span class="p">.</span><span class="nx">UpdateResolutionInput</span><span class="p">{</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">        </span><span class="nx">Resolution</span><span class="p">:</span><span class="w">  </span><span class="nx">secretscanner</span><span class="p">.</span><span class="nx">ResolutionFalsePositive</span><span class="p">,</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">        </span><span class="nx">WorkspaceID</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;WORKSPACE_ID&quot;</span><span class="p">,</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="p">})</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">client</span><span class="p">.</span><span class="nx">SecretScanner</span><span class="p">().</span><span class="nx">UpdateResolution</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;SECRET_ID&quot;</span><span class="p">,</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">    </span><span class="o">&amp;</span><span class="nx">secretscanner</span><span class="p">.</span><span class="nx">UpdateResolutionInput</span><span class="p">{</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">        </span><span class="nx">Resolution</span><span class="p">:</span><span class="w">  </span><span class="nx">secretscanner</span><span class="p">.</span><span class="nx">ResolutionFalsePositive</span><span class="p">,</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">        </span><span class="nx">WorkspaceID</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;WORKSPACE_ID&quot;</span><span class="p">,</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span><span class="p">})</span>
 </code></pre></div>
 <p><code>Resolution</code> accepts <code>ResolutionFalsePositive</code>, <code>ResolutionRevoked</code>, or
 <code>ResolutionAcceptedRisk</code> — <code>ResolutionActive</code> cannot be set directly.</p>
 <h3 id="locations">Locations<a class="headerlink" href="#locations" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nx">locations</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">client</span><span class="p">.</span><span class="nx">SecretScanner</span><span class="p">().</span><span class="nx">Locations</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;SECRET_ID&quot;</span><span class="p">,</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">    </span><span class="o">&amp;</span><span class="nx">secretscanner</span><span class="p">.</span><span class="nx">LocationsInput</span><span class="p">{</span><span class="nx">WorkspaceID</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;WORKSPACE_ID&quot;</span><span class="p">})</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="k">for</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">loc</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">locations</span><span class="p">.</span><span class="nx">Locations</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">    </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">loc</span><span class="p">.</span><span class="nx">Location</span><span class="p">,</span><span class="w"> </span><span class="nx">loc</span><span class="p">.</span><span class="nx">URL</span><span class="p">,</span><span class="w"> </span><span class="nx">loc</span><span class="p">.</span><span class="nx">ResourceType</span><span class="p">)</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nx">locations</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">client</span><span class="p">.</span><span class="nx">SecretScanner</span><span class="p">().</span><span class="nx">Locations</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;SECRET_ID&quot;</span><span class="p">,</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">    </span><span class="o">&amp;</span><span class="nx">secretscanner</span><span class="p">.</span><span class="nx">LocationsInput</span><span class="p">{</span><span class="nx">WorkspaceID</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;WORKSPACE_ID&quot;</span><span class="p">})</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="k">for</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">loc</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">locations</span><span class="p">.</span><span class="nx">Locations</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">    </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">loc</span><span class="p">.</span><span class="nx">Location</span><span class="p">,</span><span class="w"> </span><span class="nx">loc</span><span class="p">.</span><span class="nx">URL</span><span class="p">,</span><span class="w"> </span><span class="nx">loc</span><span class="p">.</span><span class="nx">ResourceType</span><span class="p">)</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="p">}</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="c1">// The secret&#39;s resolution history.</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="k">for</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">e</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">locations</span><span class="p">.</span><span class="nx">ActivityFeed</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="w">    </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">Status</span><span class="p">,</span><span class="w"> </span><span class="nx">e</span><span class="p">.</span><span class="nx">ResolvedAt</span><span class="p">,</span><span class="w"> </span><span class="nx">e</span><span class="p">.</span><span class="nx">ResolvedBy</span><span class="p">)</span>
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="p">}</span>
 </code></pre></div>
+<p><code>Limit</code> defaults to 100, as with <code>Query</code>. For a secret that is still active,
+the activity-feed entry has no <code>ResolvedAt</code> or <code>ResolvedBy</code>. Those fields are
+then empty (<code>""</code> and <code>0</code>), and <code>Cursor</code> is empty when there's no cursor.</p>
 <h3 id="secrettypes">SecretTypes<a class="headerlink" href="#secrettypes" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nx">types</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">client</span><span class="p">.</span><span class="nx">SecretScanner</span><span class="p">().</span><span class="nx">SecretTypes</span><span class="p">(</span><span class="nx">ctx</span><span class="p">)</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="k">for</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">t</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">types</span><span class="p">.</span><span class="nx">Types</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">    </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">t</span><span class="p">.</span><span class="nx">ID</span><span class="p">,</span><span class="w"> </span><span class="nx">t</span><span class="p">.</span><span class="nx">Name</span><span class="p">,</span><span class="w"> </span><span class="nx">t</span><span class="p">.</span><span class="nx">Origin</span><span class="p">)</span><span class="w"> </span><span class="c1">// Origin: DEFAULT or TEAM_REGEX</span>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nx">types</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">client</span><span class="p">.</span><span class="nx">SecretScanner</span><span class="p">().</span><span class="nx">SecretTypes</span><span class="p">(</span><span class="nx">ctx</span><span class="p">)</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="k">for</span><span class="w"> </span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">t</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="k">range</span><span class="w"> </span><span class="nx">types</span><span class="p">.</span><span class="nx">Types</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">    </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">t</span><span class="p">.</span><span class="nx">ID</span><span class="p">,</span><span class="w"> </span><span class="nx">t</span><span class="p">.</span><span class="nx">Name</span><span class="p">,</span><span class="w"> </span><span class="nx">t</span><span class="p">.</span><span class="nx">Origin</span><span class="p">)</span><span class="w"> </span><span class="c1">// Origin: DEFAULT or TEAM_REGEX</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="p">}</span>
 </code></pre></div>
+<h2 id="exporting-to-ocsf">Exporting to OCSF<a class="headerlink" href="#exporting-to-ocsf" title="Permanent link">&para;</a></h2>
+<p>To send findings to a SIEM or data lake, convert them to OCSF Detection
+Finding events with the <code>ocsf</code> package — see
+<a href="../../guides/ocsf/">Exporting Findings to OCSF</a>.</p>
 <h2 id="reference">Reference<a class="headerlink" href="#reference" title="Permanent link">&para;</a></h2>
 <p>Source: <a href="https://github.com/grokify/postman-go/tree/main/secretscanner"><code>secretscanner/</code></a> ·
 <a href="https://pkg.go.dev/github.com/grokify/postman-go/secretscanner">GoDoc</a></p>

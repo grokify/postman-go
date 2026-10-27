@@ -327,7 +327,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../releases/v0.1.0/" class="md-tabs__link">
+        <a href="../../releases/v0.2.0/" class="md-tabs__link">
           
   
   
@@ -653,6 +653,62 @@
     
   
     Rate Limiting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guides/ocsf/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Exporting to OCSF
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../guides/testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing
   
 
     
@@ -1812,6 +1868,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../releases/v0.2.0/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    v0.2.0
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../releases/v0.1.0/" class="md-nav__link">
         
   
@@ -2019,6 +2103,9 @@ Free plans.</p>
 <a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">op</span><span class="p">.</span><span class="nx">Name</span><span class="p">,</span><span class="w"> </span><span class="nx">op</span><span class="p">.</span><span class="nx">Usage</span><span class="p">,</span><span class="w"> </span><span class="nx">op</span><span class="p">.</span><span class="nx">Limit</span><span class="p">,</span><span class="w"> </span><span class="nx">op</span><span class="p">.</span><span class="nx">Overage</span><span class="p">)</span>
 <a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="p">}</span>
 </code></pre></div>
+<p><code>Usage</code>, <code>Limit</code>, and <code>Overage</code> are <code>float64</code>, because some metered
+operations report fractional values (for example <code>test_data_storage</code> can
+report a limit of <code>8.88</code>). Before v0.2.0 they were <code>int</code>.</p>
 <h3 id="list">List<a class="headerlink" href="#list" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nx">result</span><span class="p">,</span><span class="w"> </span><span class="nx">err</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">client</span><span class="p">.</span><span class="nx">Users</span><span class="p">().</span><span class="nx">List</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="nx">users</span><span class="p">.</span><span class="nx">ListInput</span><span class="p">{</span>
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span><span class="nx">GroupID</span><span class="p">:</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="c1">// limit to members of this user group; use the Groups API to get IDs</span>
