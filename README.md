@@ -77,10 +77,14 @@ package with plain Go types, typed errors, and unit tests.
 
 Each service is reachable from a single `*postman.Client` — see [Usage](#usage).
 
+On top of the service packages, [`ocsf`](ocsf/) maps Secret Scanner findings
+to [OCSF](https://schema.ocsf.io/) Detection Finding events for SIEMs and data
+lakes — see [Exporting to OCSF](#exporting-to-ocsf).
+
 ## Documentation
 
 The full guide site — installation, authentication, error handling, rate
-limiting, and a usage page per service — is published at
+limiting, OCSF export, testing, and a usage page per service — is published at
 **[grokify.github.io/postman-go](https://grokify.github.io/postman-go)**,
 built with [MkDocs](https://www.mkdocs.org/) + [Material](https://squidfunk.github.io/mkdocs-material/)
 from [`docs/`](docs/) and [`mkdocs.yml`](mkdocs.yml). Preview it locally:
@@ -115,6 +119,8 @@ server from the repo root (`python3 -m http.server`) and point the page's
 ```bash
 go get github.com/grokify/postman-go
 ```
+
+Requires Go 1.26 or later.
 
 ## Authentication
 
@@ -187,6 +193,38 @@ func main() {
 
 See [`examples/`](examples/) for runnable programs.
 
+Paginated Secret Scanner calls (`Query`, `Locations`) send `limit=100`, the
+API's maximum page size, when you leave `Limit` at `0`.
+
+## Exporting to OCSF
+
+The [`ocsf`](ocsf/) package converts Secret Scanner results into OCSF
+Detection Finding events (`class_uid` 2004), using the types from
+[`ocsf-schema-go`](https://github.com/grokify/ocsf-schema-go). It only maps
+data — it makes no HTTP calls and stores nothing — so you can send the events
+to any OCSF-aware tool:
+
+```go
+res, err := client.SecretScanner().Query(ctx, nil)
+if err != nil {
+	log.Fatal(err)
+}
+for _, f := range ocsf.FromQueryResult(res, nil) {
+	b, err := json.Marshal(f)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(string(b))
+}
+```
+
+Other mappers add per-location resources (`FromDetectedSecretWithLocations`),
+caller-resolved names, owners, and remediation text
+(`FromDetectedSecretEnriched`), and resolution-history events
+(`FromActivityFeed`). See the
+[OCSF guide](https://grokify.github.io/postman-go/guides/ocsf/) for the field
+mapping.
+
 ## Error handling
 
 Non-2xx responses are returned as `*postman.APIError` (an alias for
@@ -208,6 +246,17 @@ resolve to a concrete shape; in those cases only the HTTP status code is
 recoverable (no title/detail body). This is documented per-method where it
 applies — see `scripts/gen-openapi/README.md`'s "Known approximations".
 
+## Testing
+
+```bash
+go test ./...                                  # unit tests, offline
+POSTMAN_API_KEY=PMAK-... go test -run Integration -v .   # live, read-only
+```
+
+Unit tests run against a local `httptest` server. The integration tests in
+the root package call the live API and are skipped unless `POSTMAN_API_KEY`
+is set. See the [Testing guide](https://grokify.github.io/postman-go/guides/testing/).
+
 ## Regenerating the SDK
 
 The OpenAPI spec is reconstructed from the Postman TypeScript SDK, and the
@@ -222,7 +271,10 @@ node scripts/gen-openapi/index.mjs
 ```
 
 See [`scripts/gen-openapi/README.md`](scripts/gen-openapi/README.md) for how
-the reconstruction works and its documented approximations. The hand-written
+the reconstruction works and its documented approximations. Where the live API
+disagrees with the TypeScript SDK (fractional numbers, unexpected `null`s), the
+generator applies per-field overrides (`FLOAT_FIELDS`, `NULLABLE_FIELDS` in
+`index.mjs`), so those fixes survive regeneration. The hand-written
 service packages (`secretscanner/`, `collections/`, etc.) are not generated and
 may need updates if the spec's operation IDs or schemas change.
 
@@ -235,6 +287,7 @@ postman-go/
 ├── scripts/gen-openapi/   # TS SDK -> OpenAPI spec generator
 ├── internal/api/          # ogen-generated client (do not edit)
 ├── postmanerr/            # shared error types (leaf package)
+├── ocsf/                  # Secret Scanner -> OCSF Detection Finding mapping
 ├── secretscanner/         # one wrapper package per Postman service area
 ├── collections/
 ├── workspaces/
@@ -242,9 +295,11 @@ postman-go/
 ├── mkdocs.yml             # guide site config (see Documentation above)
 ├── docs/
 │   ├── index.md, getting-started/, guides/  # guide site source
+│   ├── releases/          # per-version release notes
 │   ├── services/*.md      # one usage page per service, mirrors nav below
 │   └── api-reference.html # Scalar-rendered API reference (see openapi.yaml)
-└── examples/              # runnable examples
+├── examples/              # runnable examples
+└── integration_test.go    # live API tests (need POSTMAN_API_KEY)
 ```
 
 ## License
