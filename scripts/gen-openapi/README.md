@@ -57,7 +57,13 @@ generator makes a documented, ogen-safe choice:
   known enum; otherwise the field stays a plain `string`. Enum *parameters* (typed
   in `request-params.ts`) are always precise.
 - **`z.number()` → `integer`** — TypeScript `number` is ambiguous; Postman numeric
-  fields are overwhelmingly counts/IDs, so integer is the default.
+  fields are overwhelmingly counts/IDs, so integer is the default. Fields the
+  live API is known to return as fractions are listed in `FLOAT_FIELDS` in
+  `index.mjs` and emitted as `type: number, format: double` instead.
+- **Fields the live API returns as `null`** — some fields the TypeScript SDK
+  marks non-nullable come back as `null` (for example the Secret Scanner
+  locations `meta.cursor`). These are listed in `NULLABLE_FIELDS` in
+  `index.mjs` and emitted with `nullable: true`.
 - **`z.union` / `z.discriminatedUnion`** — emitted as a free-form schema (`{}` →
   `any` in Go). The unions in this SDK are dominated by `[z.any(), ...]` shapes,
   so little is lost.
@@ -67,5 +73,10 @@ generator makes a documented, ogen-safe choice:
   dropped and a warning is logged.
 - **Component name collisions** — liblab reuses positional names (e.g.
   `SuccessfulResponseData2`) across services; duplicates are suffixed (`_2`, ...).
+
+Both lists are keyed `${OpenAPI component name}.${property}`. When the live
+API returns a value the decoder rejects, add the field to the matching list,
+regenerate, and add a unit test that replays the response so the fix survives
+the next regeneration.
 
 Run the generator to see the current warning list on stderr.

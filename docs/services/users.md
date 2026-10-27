@@ -51,6 +51,10 @@ for _, op := range result.Operations {
 }
 ```
 
+`Usage`, `Limit`, and `Overage` are `float64`, because some metered
+operations report fractional values (for example `test_data_storage` can
+report a limit of `8.88`). Before v0.2.0 they were `int`.
+
 ### List
 
 ```go

@@ -59,6 +59,29 @@ result, err := client.SecretScanner().Query(ctx, &secretscanner.QueryInput{
 A `nil` input returns all results. `Resources` and `WorkspaceIDs` are
 mutually exclusive filters.
 
+When `Limit` is `0`, the SDK sends `limit=100`, the API's maximum page size.
+It always sends a limit because, without one, Postman echoes its default page
+size back as a string, which the response decoder rejects.
+
+To fetch every page, pass `NextCursor` back as `Cursor` until it's empty:
+
+```go
+in := &secretscanner.QueryInput{}
+for {
+	page, err := client.SecretScanner().Query(ctx, in)
+	if err != nil {
+		return err
+	}
+	for _, s := range page.Secrets {
+		fmt.Println(s.SecretID, s.SecretType)
+	}
+	if page.NextCursor == "" {
+		break
+	}
+	in.Cursor = page.NextCursor
+}
+```
+
 ### UpdateResolution
 
 ```go
@@ -80,7 +103,15 @@ locations, err := client.SecretScanner().Locations(ctx, "SECRET_ID",
 for _, loc := range locations.Locations {
 	fmt.Println(loc.Location, loc.URL, loc.ResourceType)
 }
+// The secret's resolution history.
+for _, e := range locations.ActivityFeed {
+	fmt.Println(e.Status, e.ResolvedAt, e.ResolvedBy)
+}
 ```
+
+`Limit` defaults to 100, as with `Query`. For a secret that is still active,
+the activity-feed entry has no `ResolvedAt` or `ResolvedBy`. Those fields are
+then empty (`""` and `0`), and `Cursor` is empty when there's no cursor.
 
 ### SecretTypes
 
@@ -90,6 +121,12 @@ for _, t := range types.Types {
 	fmt.Println(t.ID, t.Name, t.Origin) // Origin: DEFAULT or TEAM_REGEX
 }
 ```
+
+## Exporting to OCSF
+
+To send findings to a SIEM or data lake, convert them to OCSF Detection
+Finding events with the `ocsf` package — see
+[Exporting Findings to OCSF](../guides/ocsf.md).
 
 ## Reference
 

@@ -23,7 +23,7 @@ You only need to import a service's subpackage when you construct its
 
 ## Requirements
 
-- Go 1.25 or later
+- Go 1.26 or later
 - A [Postman API key](https://learning.postman.com/docs/developer/postman-api/authentication/)
 
 See [Authentication](../guides/authentication.md) for how to configure the
