@@ -198,3 +198,33 @@ func asAPIError(err error, target **postmanerr.APIError) bool {
 	}
 	return ok
 }
+
+// TestMeFractionalOperationLimit reproduces the live /me response where a
+// metered operation reports a fractional value (e.g. test_data_storage
+// "limit": 8.88). These fields were originally typed integer and the decoder
+// rejected the float; the spec now types them number/double and the SDK exposes
+// them as float64. This guards against a regression on spec regeneration.
+func TestMeFractionalOperationLimit(t *testing.T) {
+	svc, srv := newService(t, func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = w.Write([]byte(`{
+			"user": {"id": 1, "username": "u1", "email": "u1@example.com", "roles": ["user"]},
+			"operations": [
+				{"name": "test_data_storage", "usage": 1.5, "limit": 8.88, "overage": 0}
+			]
+		}`))
+	})
+	defer srv.Close()
+
+	got, err := svc.Me(context.Background())
+	if err != nil {
+		t.Fatalf("Me decode with fractional operation limit failed: %v", err)
+	}
+	if len(got.Operations) != 1 {
+		t.Fatalf("Operations len = %d, want 1", len(got.Operations))
+	}
+	op := got.Operations[0]
+	if op.Limit != 8.88 || op.Usage != 1.5 {
+		t.Errorf("fractional operation values mismatch: %+v", op)
+	}
+}

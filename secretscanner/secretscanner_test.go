@@ -115,6 +115,25 @@ func TestQuery(t *testing.T) {
 	}
 }
 
+// TestQueryDefaultLimit verifies the SDK always sends an explicit limit, even
+// when the caller specifies none. Omitting it makes Postman echo its default
+// page size back as a string ("limit":"30"), which the typed decoder rejects;
+// sending an explicit limit forces an integer echo.
+func TestQueryDefaultLimit(t *testing.T) {
+	svc, srv := newService(t, func(w http.ResponseWriter, r *http.Request) {
+		if got := r.URL.Query().Get("limit"); got != "100" {
+			t.Errorf("limit = %q, want 100 (default)", got)
+		}
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = w.Write([]byte(`{"meta": {"limit": 100, "nextCursor": null}, "data": []}`))
+	})
+	defer srv.Close()
+
+	if _, err := svc.Query(context.Background(), &secretscanner.QueryInput{}); err != nil {
+		t.Fatalf("Query: %v", err)
+	}
+}
+
 func TestUpdateResolution(t *testing.T) {
 	svc, srv := newService(t, func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPut || r.URL.Path != "/detected-secrets/s1" {
@@ -240,4 +259,43 @@ func asAPIError(err error, target **postmanerr.APIError) bool {
 		*target = e
 	}
 	return ok
+}
+
+// TestLocationsTolerateNulls reproduces the live Secret Scanner locations
+// response for an unresolved secret: meta.cursor is null, and the activity-feed
+// entry's resolvedAt/resolvedBy are null. These fields were originally typed
+// non-nullable and the decoder rejected the nulls; the spec now marks them
+// nullable. This guards against a regression on the next spec regeneration.
+func TestLocationsTolerateNulls(t *testing.T) {
+	svc, srv := newService(t, func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = w.Write([]byte(`{
+			"data": [
+				{"resourceId": "r1", "resourceType": "request", "location": "Description",
+				 "occurrences": 1, "leakedBy": 42, "isResourceDeleted": false,
+				 "parentResourceId": "p1", "url": "https://go.postman.co/x"}
+			],
+			"meta": {
+				"secretHash": "h1", "secretType": "GitHub Personal Access Token",
+				"obfuscatedSecret": "ghp_1******", "limit": 100, "cursor": null, "nextCursor": null,
+				"activityFeed": [{"status": "ACTIVE", "resolvedAt": null, "resolvedBy": null}]
+			}
+		}`))
+	})
+	defer srv.Close()
+
+	got, err := svc.Locations(context.Background(), "s1", &secretscanner.LocationsInput{WorkspaceID: "w1"})
+	if err != nil {
+		t.Fatalf("Locations decode with null cursor/resolvedAt/resolvedBy failed: %v", err)
+	}
+	if len(got.Locations) != 1 || got.Locations[0].LeakedBy != 42 || got.Locations[0].URL != "https://go.postman.co/x" {
+		t.Errorf("location mismatch: %+v", got.Locations)
+	}
+	if len(got.ActivityFeed) != 1 || got.ActivityFeed[0].Status != secretscanner.ResolutionActive {
+		t.Errorf("activity feed mismatch: %+v", got.ActivityFeed)
+	}
+	// Null resolvedAt/resolvedBy decode to zero values.
+	if got.ActivityFeed[0].ResolvedAt != "" || got.ActivityFeed[0].ResolvedBy != 0 {
+		t.Errorf("expected zero-valued resolvedAt/resolvedBy for null, got %+v", got.ActivityFeed[0])
+	}
 }
