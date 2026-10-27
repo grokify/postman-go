@@ -221,18 +221,18 @@ func (s *AccountInvoice) SetLinks(val OptInvoicesLinks) {
 
 // Ref: #/components/schemas/ActivityFeed
 type ActivityFeed struct {
-	ResolvedAt OptString             `json:"resolvedAt"`
-	ResolvedBy OptInt                `json:"resolvedBy"`
+	ResolvedAt OptNilString          `json:"resolvedAt"`
+	ResolvedBy OptNilInt             `json:"resolvedBy"`
 	Status     OptActivityFeedStatus `json:"status"`
 }
 
 // GetResolvedAt returns the value of ResolvedAt.
-func (s *ActivityFeed) GetResolvedAt() OptString {
+func (s *ActivityFeed) GetResolvedAt() OptNilString {
 	return s.ResolvedAt
 }
 
 // GetResolvedBy returns the value of ResolvedBy.
-func (s *ActivityFeed) GetResolvedBy() OptInt {
+func (s *ActivityFeed) GetResolvedBy() OptNilInt {
 	return s.ResolvedBy
 }
 
@@ -242,12 +242,12 @@ func (s *ActivityFeed) GetStatus() OptActivityFeedStatus {
 }
 
 // SetResolvedAt sets the value of ResolvedAt.
-func (s *ActivityFeed) SetResolvedAt(val OptString) {
+func (s *ActivityFeed) SetResolvedAt(val OptNilString) {
 	s.ResolvedAt = val
 }
 
 // SetResolvedBy sets the value of ResolvedBy.
-func (s *ActivityFeed) SetResolvedBy(val OptInt) {
+func (s *ActivityFeed) SetResolvedBy(val OptNilInt) {
 	s.ResolvedBy = val
 }
 
@@ -42467,7 +42467,7 @@ func (s *SuccessfulResponseMeta1) SetNextCursor(val OptString) {
 // Ref: #/components/schemas/SuccessfulResponseMeta2
 type SuccessfulResponseMeta2 struct {
 	ActivityFeed     []ActivityFeed `json:"activityFeed"`
-	Cursor           OptString      `json:"cursor"`
+	Cursor           OptNilString   `json:"cursor"`
 	Limit            OptInt         `json:"limit"`
 	NextCursor       OptNilString   `json:"nextCursor"`
 	ObfuscatedSecret OptString      `json:"obfuscatedSecret"`
@@ -42482,7 +42482,7 @@ func (s *SuccessfulResponseMeta2) GetActivityFeed() []ActivityFeed {
 }
 
 // GetCursor returns the value of Cursor.
-func (s *SuccessfulResponseMeta2) GetCursor() OptString {
+func (s *SuccessfulResponseMeta2) GetCursor() OptNilString {
 	return s.Cursor
 }
 
@@ -42522,7 +42522,7 @@ func (s *SuccessfulResponseMeta2) SetActivityFeed(val []ActivityFeed) {
 }
 
 // SetCursor sets the value of Cursor.
-func (s *SuccessfulResponseMeta2) SetCursor(val OptString) {
+func (s *SuccessfulResponseMeta2) SetCursor(val OptNilString) {
 	s.Cursor = val
 }
 

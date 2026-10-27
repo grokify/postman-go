@@ -9890,8 +9890,10 @@ components:
       properties:
         resolvedAt:
           type: string
+          nullable: true
         resolvedBy:
           type: integer
+          nullable: true
         status:
           $ref: '#/components/schemas/ActivityFeedStatus'
     ActivityFeedStatus:
@@ -16931,6 +16933,7 @@ components:
             $ref: '#/components/schemas/ActivityFeed'
         cursor:
           type: string
+          nullable: true
         limit:
           type: integer
         nextCursor:

@@ -57,6 +57,18 @@ log(`loaded ${sourceFiles.length} TS source files`);
 const components = {}; // finalName -> schema object
 const usedNames = new Set();
 
+// The TS SDK marks some pagination/meta string fields non-nullable, but the
+// live Postman API returns `null` for them (e.g. a locations response's
+// meta.cursor when there is no cursor), which the strict decoder rejects. Force
+// these confirmed fields nullable. Add an entry (`${component}.${property}`)
+// when a future regen turns up another meta field the live API returns as null.
+const NULLABLE_FIELDS = new Set([
+  'SuccessfulResponseMeta2.cursor',
+  // An unresolved (ACTIVE) activity-feed entry returns null resolvedAt/resolvedBy.
+  'ActivityFeed.resolvedAt',
+  'ActivityFeed.resolvedBy',
+]);
+
 // resolution maps
 const baseConstToType = new Map(); // key `${file}::${constName}` -> { typeName, file }
 const declToFinal = new Map(); // key `${file}::${declName}` -> finalName (for types, base consts, variants, enums)
@@ -185,12 +197,12 @@ function refFor(sf, ident) {
 // ---------------------------------------------------------------------------
 // Given a ts-morph Expression node representing a zod schema, produce a JSON
 // Schema fragment and whether it is optional / nullable.
-function parseZod(sf, expr, depth = 0) {
+function parseZod(sf, expr, depth = 0, schemaName = undefined) {
   if (depth > 40) return { schema: {} };
 
   // unwrap parenthesized
   if (Node.isParenthesizedExpression(expr)) {
-    return parseZod(sf, expr.getExpression(), depth + 1);
+    return parseZod(sf, expr.getExpression(), depth + 1, schemaName);
   }
 
   // Identifier referring to another schema const -> $ref
@@ -221,7 +233,7 @@ function parseZod(sf, expr, depth = 0) {
   // Handle chained modifiers by recursing into the object side.
   if (method && ['optional', 'nullable', 'nullish', 'default', 'describe', 'catch', 'readonly'].includes(method)) {
     const inner = callee.getExpression();
-    const res = parseZod(sf, inner, depth + 1);
+    const res = parseZod(sf, inner, depth + 1, schemaName);
     chainMods(method);
     res.optional = res.optional || modifiers.optional;
     res.nullable = res.nullable || modifiers.nullable;
@@ -241,7 +253,7 @@ function parseZod(sf, expr, depth = 0) {
           const rs = body.getStatements().find((s) => Node.isReturnStatement(s));
           if (rs) ret = rs.getExpression();
         }
-        if (ret) return parseZod(sf, ret, depth + 1);
+        if (ret) return parseZod(sf, ret, depth + 1, schemaName);
       }
       return { schema: {} };
     }
@@ -293,7 +305,7 @@ function parseZod(sf, expr, depth = 0) {
         return { schema: { type: 'array', items } };
       }
       case 'object': {
-        return { schema: parseZodObject(sf, expr, depth) };
+        return { schema: parseZodObject(sf, expr, depth, schemaName) };
       }
       case 'record': {
         const args = expr.getArguments();
@@ -333,7 +345,7 @@ function parseZod(sf, expr, depth = 0) {
   return { schema: {} };
 }
 
-function parseZodObject(sf, callExpr, depth) {
+function parseZodObject(sf, callExpr, depth, schemaName = undefined) {
   const arg = callExpr.getArguments()[0];
   const schema = { type: 'object' };
   const properties = {};
@@ -347,9 +359,10 @@ function parseZodObject(sf, callExpr, depth) {
       else key = prop.getName();
       const valExpr = prop.getInitializer();
       if (!valExpr) continue;
-      const res = parseZod(sf, valExpr, depth + 1);
+      const res = parseZod(sf, valExpr, depth + 1, schemaName);
       let fieldSchema = res.schema || {};
-      if (res.nullable) {
+      const forceNullable = schemaName && NULLABLE_FIELDS.has(`${schemaName}.${key}`);
+      if (res.nullable || forceNullable) {
         if (fieldSchema.$ref) {
           fieldSchema = { nullable: true, allOf: [fieldSchema] };
         } else {
@@ -436,7 +449,7 @@ for (const t of typeDecls) {
     continue;
   }
   try {
-    const res = parseZod(sf, init, 0);
+    const res = parseZod(sf, init, 0, finalName);
     let s = res.schema || {};
     if (res.nullable) s = { ...s, nullable: true };
     components[finalName] = s;
