@@ -65,6 +65,15 @@ const (
 	SecretTypeOriginTeamRegex SecretTypeOrigin = "TEAM_REGEX" //nolint:gosec // G101: Enum/constant identifier matches the credential-name heuristic, but the value is a public tag, not a secret
 )
 
+// defaultPageLimit is sent as the limit query parameter for paginated Secret
+// Scanner requests when the caller does not specify one. Postman applies its
+// own default page size (30) regardless, but the response echoes that implicit
+// default back as a string ("limit":"30"), which the typed response decoder
+// rejects. Sending an explicit limit makes Postman echo an integer, and 100 is
+// the API's documented maximum page size (values above it are rejected), so it
+// also minimizes pagination round-trips.
+const defaultPageLimit = 100
+
 // Service is the high-level Secret Scanner client. Obtain one via
 // postman.Client.SecretScanner.
 type Service struct {
@@ -173,9 +182,7 @@ func (s *Service) Query(ctx context.Context, in *QueryInput) (*QueryResult, erro
 	}
 
 	params := api.DetectedSecretsQueriesParams{}
-	if in.Limit > 0 {
-		params.Limit = api.NewOptInt(in.Limit)
-	}
+	params.Limit = api.NewOptInt(pageLimit(in.Limit))
 	if in.Cursor != "" {
 		params.Cursor = api.NewOptString(in.Cursor)
 	}
@@ -366,9 +373,7 @@ func (s *Service) Locations(ctx context.Context, secretID string, in *LocationsI
 		SecretId:    secretID,
 		WorkspaceId: in.WorkspaceID,
 	}
-	if in.Limit > 0 {
-		params.Limit = api.NewOptInt(in.Limit)
-	}
+	params.Limit = api.NewOptInt(pageLimit(in.Limit))
 	if in.Cursor != "" {
 		params.Cursor = api.NewOptString(in.Cursor)
 	}
@@ -485,4 +490,14 @@ func (s *Service) SecretTypes(ctx context.Context) (*SecretTypesResult, error) {
 
 func errUnexpectedResponse(_ any) error {
 	return &postmanerr.APIError{Title: "unexpected response type from API"}
+}
+
+// pageLimit returns the limit query parameter to send: the caller's value when
+// positive, otherwise defaultPageLimit. See defaultPageLimit for why an
+// explicit limit is always sent.
+func pageLimit(in int) int {
+	if in > 0 {
+		return in
+	}
+	return defaultPageLimit
 }
