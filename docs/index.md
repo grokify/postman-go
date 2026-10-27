@@ -19,6 +19,9 @@ hand-written, domain-oriented wrapper packages on top — one per service area.
   public API; every service returns plain structs and typed enums.
 - **Typed errors** — non-2xx responses come back as `*postman.APIError`,
   carrying the RFC 9457 problem-details fields Postman returns.
+- **OCSF export** — the `ocsf` package turns Secret Scanner findings into
+  OCSF Detection Finding events for SIEMs and data lakes — see
+  [Exporting Findings to OCSF](guides/ocsf.md).
 - **Generated where it should be, hand-written where it matters** — the
   low-level HTTP/JSON plumbing is generated and never hand-edited; the public
   API is hand-written and reviewed like any other Go code.
@@ -29,6 +32,7 @@ hand-written, domain-oriented wrapper packages on top — one per service area.
 |---------|-------------|
 | root (`postman`) | Top-level `Client`, auth, options |
 | `postmanerr` | Shared error type (`APIError`) and mapping helpers |
+| `ocsf` | Maps Secret Scanner results to OCSF Detection Finding events |
 | `internal/api` | ogen-generated client (not part of the public API) |
 | `secretscanner`, `collections`, `workspaces`, ... | One package per Postman service area — see [Services](services/analytics.md) |
 

@@ -49,6 +49,8 @@ nav:
       - Authentication: guides/authentication.md
       - Error Handling: guides/errors.md
       - Rate Limiting: guides/rate-limiting.md
+      - Exporting to OCSF: guides/ocsf.md
+      - Testing: guides/testing.md
   - API Reference: api-reference.html
   - Services:
       - Analytics: services/analytics.md
