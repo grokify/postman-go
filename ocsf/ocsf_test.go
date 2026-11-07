@@ -4,11 +4,11 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/grokify/ocsf-schema-go/ocsf/events"
-	"github.com/grokify/ocsf-schema-go/ocsf/ocsfdata"
-	"github.com/grokify/ocsf-schema-go/validate"
 	"github.com/grokify/postman-go/ocsf"
 	"github.com/grokify/postman-go/secretscanner"
+	"github.com/opensecurity-dev/ocsf-schema-go/ocsf/events"
+	"github.com/opensecurity-dev/ocsf-schema-go/ocsf/ocsfdata"
+	"github.com/opensecurity-dev/ocsf-schema-go/validate"
 )
 
 // sampleSecret mirrors the shape of a /detected-secrets-queries row, with

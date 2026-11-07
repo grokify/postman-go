@@ -8,7 +8,7 @@ secret exposures to a SIEM, a data lake, or any tool that reads OCSF.
 The package only maps data. It makes no HTTP calls and stores nothing:
 you fetch results with `client.SecretScanner()`, convert them with `ocsf`,
 and send the events wherever you like. The OCSF types come from
-[`ocsf-schema-go`](https://github.com/grokify/ocsf-schema-go).
+[`ocsf-schema-go`](https://github.com/opensecurity-dev/ocsf-schema-go).
 
 !!! note "Requires an add-on"
     The Secret Scanner API needs a Postman Enterprise plan with the Advanced

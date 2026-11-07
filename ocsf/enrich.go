@@ -1,6 +1,6 @@
 package ocsf
 
-import "github.com/grokify/ocsf-schema-go/ocsf/objects"
+import "github.com/opensecurity-dev/ocsf-schema-go/ocsf/objects"
 
 // Enrichment carries caller-resolved remediation context that the Postman
 // Secret Scanner API does not return directly. The Secret Scanner gives numeric
