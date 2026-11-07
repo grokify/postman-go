@@ -3,7 +3,7 @@
 //
 // It is a pure mapping layer: it depends only on the Postman types in
 // github.com/grokify/postman-go/secretscanner and the OCSF types in
-// github.com/grokify/ocsf-schema-go, and knows nothing about storage. Callers
+// github.com/opensecurity-dev/ocsf-schema-go, and knows nothing about storage. Callers
 // persist the returned events however they like — e.g. by passing them to an
 // ocsf-lake instance:
 //
@@ -21,9 +21,9 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/grokify/ocsf-schema-go/ocsf/events"
-	"github.com/grokify/ocsf-schema-go/ocsf/objects"
 	"github.com/grokify/postman-go/secretscanner"
+	"github.com/opensecurity-dev/ocsf-schema-go/ocsf/events"
+	"github.com/opensecurity-dev/ocsf-schema-go/ocsf/objects"
 )
 
 // Default product identity written to metadata.product and finding_info.product.

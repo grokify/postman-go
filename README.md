@@ -200,7 +200,7 @@ API's maximum page size, when you leave `Limit` at `0`.
 
 The [`ocsf`](ocsf/) package converts Secret Scanner results into OCSF
 Detection Finding events (`class_uid` 2004), using the types from
-[`ocsf-schema-go`](https://github.com/grokify/ocsf-schema-go). It only maps
+[`ocsf-schema-go`](https://github.com/opensecurity-dev/ocsf-schema-go). It only maps
 data — it makes no HTTP calls and stores nothing — so you can send the events
 to any OCSF-aware tool:
 
